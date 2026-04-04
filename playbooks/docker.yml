@@ -1,0 +1,6 @@
+---
+- name: Install Docker and remove Podman
+  hosts: all
+  become: true
+  roles:
+    - docker
