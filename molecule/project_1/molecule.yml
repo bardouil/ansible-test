@@ -8,7 +8,7 @@ driver:
   name: docker
 
 platforms:
-  - name: instance-docker-compose
+  - name: instance-project-1
     image: geerlingguy/docker-rockylinux9-ansible:latest
     pre_build_image: true
     privileged: true
@@ -25,7 +25,7 @@ provisioner:
       roles_path: ${MOLECULE_PROJECT_DIRECTORY}/roles
   inventory:
     host_vars:
-      instance-docker-compose:
+      instance-project-1:
         ansible_user: root
         docker_start_service: false
 

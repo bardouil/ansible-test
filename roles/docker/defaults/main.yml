@@ -1,3 +1,4 @@
 ---
 docker_add_user_to_group: true
 docker_user: "{{ ansible_user | default(lookup('env', 'USER')) }}"
+docker_start_service: true

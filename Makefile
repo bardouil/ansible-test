@@ -21,17 +21,31 @@ lint:
 test:
 	uv run molecule test -s $(SCENARIO)
 
-# Lance tous les scénarios molecule en séquence
+# Lance tous les scénarios molecule en parallèle
 test-all:
-	@failed=""; \
+	@pids=""; failed=""; \
 	for scenario in molecule/*/molecule.yml; do \
 		s=$$(basename $$(dirname $$scenario)); \
 		[ "$$s" = "default" ] && continue; \
-		echo "==> Testing scenario: $$s"; \
-		uv run molecule test -s $$s || failed="$$failed $$s"; \
+		echo "==> Starting scenario: $$s"; \
+		uv run molecule test -s $$s > /tmp/molecule-$$s.log 2>&1 & \
+		pids="$$pids $$s:$$!"; \
 	done; \
+	for entry in $$pids; do \
+		s=$${entry%%:*}; pid=$${entry##*:}; \
+		if wait $$pid; then \
+			echo "PASSED: $$s"; \
+		else \
+			echo "FAILED: $$s"; \
+			cat /tmp/molecule-$$s.log; \
+			failed="$$failed $$s"; \
+		fi; \
+	done; \
+	rm -f /tmp/molecule-*.log; \
 	if [ -n "$$failed" ]; then \
-		echo "FAILED:$$failed"; exit 1; \
+		echo "==> FAILED scenarios:$$failed"; exit 1; \
+	else \
+		echo "==> All scenarios passed"; \
 	fi
 
 # Create and provision the test instance

@@ -10,7 +10,7 @@
   hosts: localhost_1
   become: true
   vars:
-    compose_project_name: myapp
+    compose_project_name: project1
     compose_template_src: templates/docker-compose.yml.j2
     compose_extra_files:
       - src: templates/app.env.j2
