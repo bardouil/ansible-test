@@ -1,0 +1,30 @@
+---
+- name: Install Docker
+  hosts: all
+  become: true
+  roles:
+    - docker
+
+- name: Deploy Docker Compose project
+  hosts: all
+  become: true
+  vars:
+    compose_project_name: testapp
+    compose_project_path: /opt/testapp
+    app_image: nginx:alpine
+    app_port: 8080
+    app_env: test
+    db_host: localhost
+    db_name: testdb
+    db_user: testuser
+    db_password: testpassword
+    compose_template_src: "{{ molecule_scenario_directory }}/templates/docker-compose.yml.j2"
+    compose_extra_files:
+      - src: "{{ molecule_scenario_directory }}/templates/app.env.j2"
+        dest: .env
+        sensitive: true
+      - src: "{{ molecule_scenario_directory }}/templates/config.yml.j2"
+        dest: config.yml
+    compose_start: false
+  roles:
+    - docker_compose

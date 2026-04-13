@@ -1,0 +1,10 @@
+---
+services:
+  app:
+    image: {{ app_image }}
+    container_name: {{ compose_project_name }}_app
+    restart: unless-stopped
+    ports:
+      - "{{ app_port }}:80"
+    env_file:
+      - .env

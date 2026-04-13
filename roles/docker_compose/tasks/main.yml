@@ -1,0 +1,48 @@
+---
+- name: Validate compose_template_src
+  ansible.builtin.assert:
+    that: compose_template_src | length > 0
+    fail_msg: "compose_template_src doit être défini."
+
+- name: Create compose project directory
+  ansible.builtin.file:
+    path: "{{ compose_project_path }}"
+    state: directory
+    owner: "{{ compose_owner }}"
+    group: "{{ compose_group }}"
+    mode: "{{ compose_dir_mode }}"
+
+- name: Deploy docker-compose.yml
+  ansible.builtin.template:
+    src: "{{ compose_template_src }}"
+    dest: "{{ compose_project_path }}/docker-compose.yml"
+    owner: "{{ compose_owner }}"
+    group: "{{ compose_group }}"
+    mode: "{{ compose_file_mode }}"
+  notify: Restart compose project
+
+- name: Deploy extra files
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ compose_project_path }}/{{ item.dest }}"
+    owner: "{{ compose_owner }}"
+    group: "{{ compose_group }}"
+    mode: >-
+      {{ item.mode
+         | default(compose_sensitive_mode if item.sensitive | default(false)
+           else compose_file_mode) }}
+  loop: "{{ compose_extra_files }}"
+  notify: Restart compose project
+
+- name: Pull images
+  community.docker.docker_compose_v2:
+    project_src: "{{ compose_project_path }}"
+    pull: always
+    state: present
+  when: compose_pull | bool and compose_start | bool
+
+- name: Start compose project
+  community.docker.docker_compose_v2:
+    project_src: "{{ compose_project_path }}"
+    state: present
+  when: compose_start | bool

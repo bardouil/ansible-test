@@ -1,2 +1,6 @@
 ---
+# 1. Installation Docker sur tous les hosts qui en ont besoin
 - import_playbook: playbooks/docker.yml
+
+# 2. Déploiement des projets compose (ajouter un import par app)
+- import_playbook: playbooks/docker_compose.yml

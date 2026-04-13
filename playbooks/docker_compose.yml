@@ -1,0 +1,15 @@
+---
+# Exemple de playbook utilisant le role docker_compose.
+# Copier ce fichier et adapter les variables pour chaque nouvelle app.
+- name: Deploy Docker Compose project
+  hosts: all
+  become: true
+  vars:
+    compose_project_name: myapp
+    compose_template_src: templates/myapp/docker-compose.yml.j2
+    compose_extra_files:
+      - src: templates/myapp/app.env.j2
+        dest: .env
+        sensitive: true
+  roles:
+    - docker_compose

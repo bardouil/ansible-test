@@ -1,0 +1,38 @@
+---
+# Nom du projet (utilisé comme répertoire par défaut)
+compose_project_name: myapp
+
+# Chemin de déploiement du projet
+compose_project_path: /opt/{{ compose_project_name }}
+
+# Propriétaire des fichiers déployés
+compose_owner: root
+compose_group: root
+
+# Permissions du répertoire
+compose_dir_mode: "0755"
+
+# Permissions des fichiers standard (docker-compose.yml)
+compose_file_mode: "0644"
+
+# Permissions des fichiers sensibles (.env, secrets)
+compose_sensitive_mode: "0600"
+
+# Template Jinja2 du docker-compose.yml
+# Obligatoire — chemin relatif au playbook appelant
+# Exemple : compose_template_src: templates/docker-compose.yml.j2
+compose_template_src: ""
+
+# Fichiers tiers à déployer (.env, configs, secrets…)
+# Chaque entrée :
+#   src:       chemin du fichier .j2 relatif au playbook appelant
+#   dest:      nom du fichier dans compose_project_path
+#   sensitive: true = permissions 0600 (défaut: false)
+#   mode:      permissions explicites (surcharge sensitive)
+compose_extra_files: []
+
+# Lancer docker compose up après déploiement
+compose_start: true
+
+# Forcer le re-pull des images avant de démarrer
+compose_pull: false
