@@ -1,2 +1,6 @@
 ---
-- import_playbook: ../../playbooks/docker.yml
+- name: Install Docker and remove Podman
+  hosts: all
+  become: true
+  roles:
+    - docker
