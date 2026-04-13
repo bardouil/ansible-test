@@ -8,3 +8,5 @@ services:
       - "{{ app_port }}:80"
     env_file:
       - .env
+    volumes:
+      - ./config.yml:/etc/app/config.yml:ro
